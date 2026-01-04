@@ -13,8 +13,8 @@ import random
 
 # Pulling data from yfinance API
 # ticker = 'AAPL'
-ticker = 'TSLA'
-# ticker = 'NVDA'
+# ticker = 'TSLA'
+ticker = 'NVDA'
 start_date = datetime(year=2010, month=1, day=1)
 
 df_stock = yf.download(
@@ -42,6 +42,7 @@ def calculate_rsi(data, window=14):
     return 100 - (100 / (1 + rs))
 
 # Feature engineering
+df_stock['Close'] = np.log(df_stock['Close'])
 df_stock['Returns'] = df_stock['Close'].pct_change()
 df_stock['SMA_20'] = df_stock['Close'].rolling(window=20).mean()
 df_stock['SMA_10'] = df_stock['Close'].rolling(window=10).mean()
@@ -122,8 +123,8 @@ y_test_pred = target_scaler.inverse_transform(y_test_pred)
 mse = mean_squared_error(np.array(y_test), y_test_pred[:, 0])
 
 plt.figure()
-plt.plot(y_test.index, y_test, label='Actual Price')
-plt.plot(y_test.index, y_test_pred[:,0], label='Predicted Price')
+plt.plot(y_test.index, np.exp(y_test), label='Actual Price')
+plt.plot(y_test.index, np.exp(y_test_pred[:,0]), label='Predicted Price')
 plt.legend()
 plt.show()
 
