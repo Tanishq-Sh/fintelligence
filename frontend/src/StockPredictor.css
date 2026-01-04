@@ -84,12 +84,34 @@
   font-size: 1.8rem;
   font-weight: 500;
   color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
 }
 
 .prediction-result .predicted-price {
   color: #28a745;
   font-weight: 700;
   text-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+}
+
+.prediction-result .predicted-price.down {
+    color: #c3073f;
+    text-shadow: 0 0 10px rgba(195, 7, 63, 0.5);
+}
+
+.percentage-change {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.percentage-change.up {
+    color: #28a745;
+}
+
+.percentage-change.down {
+    color: #c3073f;
 }
 
 .chart-container {

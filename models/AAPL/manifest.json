@@ -1,0 +1,44 @@
+[
+    {
+        "timestamp": "20260104_144153",
+        "model_filename": "AAPL_20260104_144153_loss-0.0012.h5",
+        "feature_scaler_filename": "AAPL_20260104_144153_loss-0.0012_feature_scaler.gz",
+        "target_scaler_filename": "AAPL_20260104_144153_loss-0.0012_target_scaler.gz",
+        "metrics": {
+            "loss": 0.001171295763924718,
+            "epochs_trained": 3
+        },
+        "config": {
+            "lookback_window": 60,
+            "train_test_split": 0.8,
+            "epochs": 3,
+            "batch_size": 32,
+            "learning_rate": 0.001,
+            "lstm_layer_1_units": 128,
+            "lstm_layer_2_units": 64,
+            "output_linear_layer": 1
+        },
+        "promoted_to_prod": true
+    },
+    {
+        "timestamp": "20260104_144247",
+        "model_filename": "AAPL_20260104_144247_loss-0.0011.h5",
+        "feature_scaler_filename": "AAPL_20260104_144247_loss-0.0011_feature_scaler.gz",
+        "target_scaler_filename": "AAPL_20260104_144247_loss-0.0011_target_scaler.gz",
+        "metrics": {
+            "loss": 0.001118169049732387,
+            "epochs_trained": 3
+        },
+        "config": {
+            "lookback_window": 60,
+            "train_test_split": 0.8,
+            "epochs": 3,
+            "batch_size": 32,
+            "learning_rate": 0.001,
+            "lstm_layer_1_units": 128,
+            "lstm_layer_2_units": 64,
+            "output_linear_layer": 1
+        },
+        "promoted_to_prod": true
+    }
+]

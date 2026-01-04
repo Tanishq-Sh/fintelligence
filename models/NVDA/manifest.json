@@ -1,0 +1,23 @@
+[
+    {
+        "timestamp": "20260104_144434",
+        "model_filename": "NVDA_20260104_144434_loss-0.0011.h5",
+        "feature_scaler_filename": "NVDA_20260104_144434_loss-0.0011_feature_scaler.gz",
+        "target_scaler_filename": "NVDA_20260104_144434_loss-0.0011_target_scaler.gz",
+        "metrics": {
+            "loss": 0.001094898208975792,
+            "epochs_trained": 10
+        },
+        "config": {
+            "lookback_window": 60,
+            "train_test_split": 0.8,
+            "epochs": 10,
+            "batch_size": 32,
+            "learning_rate": 0.001,
+            "lstm_layer_1_units": 128,
+            "lstm_layer_2_units": 64,
+            "output_linear_layer": 1
+        },
+        "promoted_to_prod": true
+    }
+]

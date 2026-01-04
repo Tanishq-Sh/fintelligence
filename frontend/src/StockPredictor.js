@@ -8,6 +8,8 @@ const StockPredictor = () => {
     const [prediction, setPrediction] = useState(null);
     const [historicalData, setHistoricalData] = useState([]);
     const [error, setError] = useState('');
+    const [priceGoesUp, setPriceGoesUp] = useState(true);
+    const [percentageChange, setPercentageChange] = useState(0);
 
     const fetchPrediction = async () => {
         try {
@@ -29,16 +31,26 @@ const StockPredictor = () => {
             const newPoint = {
                 Date: predictionData.prediction_date,
                 predicted: predictionData.predicted_price,
-                Close: null,
             };
 
-            const lastHistoricalPoint = historical[historical.length - 1];
-            const historicalPlusPrediction = [
-                ...historical,
-                { ...newPoint, Close: lastHistoricalPoint.Close },
-            ];
+            // To connect the prediction line, the last historical point also needs a 'predicted' value.
+            // This will be the starting point for the prediction line.
+            if (historical.length > 0) {
+                const lastHistoricalPoint = historical[historical.length - 1];
+                const change = ((predictionData.predicted_price - lastHistoricalPoint.Close) / lastHistoricalPoint.Close) * 100;
+                setPercentageChange(change);
+                setPriceGoesUp(predictionData.predicted_price >= lastHistoricalPoint.Close);
+                const updatedHistoricalData = historical.map((d, index) => {
+                    if (index === historical.length - 1) {
+                        return { ...d, predicted: d.Close };
+                    }
+                    return d;
+                });
+                setHistoricalData([...updatedHistoricalData, newPoint]);
+            } else {
+                setHistoricalData([newPoint]);
+            }
 
-            setHistoricalData(historicalPlusPrediction);
         } catch (err) {
             setError('Error fetching historical data.');
             console.error(err);
@@ -79,7 +91,15 @@ const StockPredictor = () => {
 
             {prediction && (
                 <div className="prediction-result">
-                    <h2>Predicted Price for {ticker}: <span className="predicted-price">${prediction.toFixed(2)}</span></h2>
+                    <h2>
+                        Predicted Price for {ticker}: 
+                        <span className={`predicted-price ${priceGoesUp ? '' : 'down'}`}>
+                            ${prediction.toFixed(2)}
+                        </span>
+                        <span className={`percentage-change ${priceGoesUp ? 'up' : 'down'}`}>
+                            {priceGoesUp ? '▲' : '▼'} {Math.abs(percentageChange).toFixed(2)}%
+                        </span>
+                    </h2>
                 </div>
             )}
 
@@ -100,8 +120,22 @@ const StockPredictor = () => {
                                 labelStyle={{ color: '#a0a0a0' }}
                             />
                             <Legend />
-                            <Line type="monotone" dataKey="Close" stroke="#6bbfd8" name="Past Price" connectNulls dot={false} />
-                            <Line type="monotone" dataKey="predicted" stroke="#28a745" name="Predicted Price" dot={{ r: 5, fill: '#28a745' }} />
+                            <Line type="monotone" dataKey="Close" stroke="#6bbfd8" name="Past Price" dot={false} />
+                            <Line 
+                                type="monotone" 
+                                dataKey="predicted" 
+                                stroke={priceGoesUp ? '#28a745' : '#c3073f'} 
+                                name="Predicted Price" 
+                                connectNulls 
+                                dot={(props) => {
+                                    const { cx, cy, payload, index } = props;
+                                    if (index === historicalData.length - 1) {
+                                        const color = priceGoesUp ? '#28a745' : '#c3073f';
+                                        return <circle cx={cx} cy={cy} r={5} fill={color} />;
+                                    }
+                                    return null;
+                                }}
+                            />
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
