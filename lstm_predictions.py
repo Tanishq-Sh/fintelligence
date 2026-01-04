@@ -42,7 +42,6 @@ def calculate_rsi(data, window=14):
     return 100 - (100 / (1 + rs))
 
 # Feature engineering
-df_stock['Close'] = np.log(df_stock['Close'])
 df_stock['Returns'] = df_stock['Close'].pct_change()
 df_stock['SMA_20'] = df_stock['Close'].rolling(window=20).mean()
 df_stock['SMA_10'] = df_stock['Close'].rolling(window=10).mean()
@@ -50,6 +49,13 @@ df_stock['SMA_5'] = df_stock['Close'].rolling(window=5).mean()
 df_stock['Volitility'] = df_stock['Returns'].rolling(window=10).std()
 df_stock['Target'] = df_stock['Close'].shift(-1)
 df_stock['RSI'] = calculate_rsi(df_stock)
+
+df_stock['Close'] = np.log(df_stock['Close'])
+df_stock['Target'] = df_stock['Close'].shift(-1)
+df_stock['SMA_20'] = np.log(df_stock['SMA_20'])
+df_stock['SMA_10'] = np.log(df_stock['SMA_10'])
+df_stock['SMA_5'] = np.log(df_stock['SMA_5'])
+
 df_stock.dropna(subset=['SMA_20', 'SMA_10', 'SMA_5', 'Volitility', 'Target', 'RSI'], inplace=True)
 
 # Split train-test data
