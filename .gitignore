@@ -4,3 +4,8 @@
 *__pycache__/
 *.gz*
 *.h5*
+
+# Frontend
+frontend/node_modules
+frontend/build
+.DS_Store
