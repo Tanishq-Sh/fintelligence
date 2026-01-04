@@ -1,3 +1,6 @@
 *.csv
 *.venv
 *.png
+*__pycache__/
+*.gz*
+*.h5*

@@ -9,7 +9,7 @@ from tensorflow.keras.layers import Dense, LSTM
 import matplotlib.pyplot as plt
 import numpy as np
 import random
-
+import joblib
 
 # Pulling data from yfinance API
 # ticker = 'AAPL'
@@ -113,6 +113,9 @@ model.fit(
     batch_size = 32
 )
 
+model.save(f'{ticker}_lstm_v1.h5')
+joblib.dump(feature_scaler, f'{ticker}_feature_scaler.gz')
+
 print(X_train_scaled.shape)
 print("==========")
 print(X_test_scaled.shape)
@@ -125,6 +128,8 @@ X_test_final = np.array(X_test_final)
 
 y_test_pred = model.predict(X_test_final)
 y_test_pred = target_scaler.inverse_transform(y_test_pred)
+
+joblib.dump(target_scaler, f'{ticker}_target_scaler.gz')
 
 mse = mean_squared_error(np.array(y_test), y_test_pred[:, 0])
 
