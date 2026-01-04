@@ -12,7 +12,9 @@ import random
 
 
 # Pulling data from yfinance API
-ticker = 'AAPL'
+# ticker = 'AAPL'
+ticker = 'TSLA'
+# ticker = 'NVDA'
 start_date = datetime(year=2010, month=1, day=1)
 
 df_stock = yf.download(
@@ -31,15 +33,27 @@ df_stock = (
     .reset_index()
 )
 
+def calculate_rsi(data, window=14):
+    delta = data['Close'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=window).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=window).mean()
+
+    rs = gain / loss
+    return 100 - (100 / (1 + rs))
+
 # Feature engineering
 df_stock['Returns'] = df_stock['Close'].pct_change()
-df_stock['SMA'] = df_stock['Close'].rolling(window=20).mean()
-df_stock['Volitility'] = df_stock['Returns'].rolling(window=20).std()
+df_stock['SMA_20'] = df_stock['Close'].rolling(window=20).mean()
+df_stock['SMA_10'] = df_stock['Close'].rolling(window=10).mean()
+df_stock['SMA_5'] = df_stock['Close'].rolling(window=5).mean()
+df_stock['Volitility'] = df_stock['Returns'].rolling(window=10).std()
 df_stock['Target'] = df_stock['Close'].shift(-1)
-df_stock.dropna(subset=['SMA', 'Volitility', 'Target'], inplace=True)
+df_stock['RSI'] = calculate_rsi(df_stock)
+df_stock.dropna(subset=['SMA_20', 'SMA_10', 'SMA_5', 'Volitility', 'Target', 'RSI'], inplace=True)
 
 # Split train-test data
-X = df_stock[['Returns', 'SMA', 'Volitility']]
+# X = df_stock[['Returns', 'SMA', 'Volitility']]
+X = df_stock[['Returns', 'SMA_20', 'SMA_10', 'SMA_5', 'Volitility', 'RSI']]
 y = df_stock['Target']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, shuffle=False)
@@ -69,12 +83,14 @@ def make_results_deterministic():
     np.random.seed(SEED)
     tf.random.set_seed(SEED)
 
-input_shape = (60, 3)
+# input_shape = (60, 3)
+# input_shape = (60, 4)
+input_shape = (60, 6)
 
 model = Sequential([
     tf.keras.Input(input_shape),
-    LSTM(units=32, return_sequences=True),
-    LSTM(units=16),
+    LSTM(units=128, return_sequences=True),
+    LSTM(units=64),
     Dense(units=1, activation='linear')
 ])
 
