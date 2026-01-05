@@ -1,11 +1,11 @@
 [
     {
-        "timestamp": "20260105_234302",
-        "model_filename": "TSLA_20260105_234302_loss-0.0014.h5",
-        "feature_scaler_filename": "TSLA_20260105_234302_loss-0.0014_feature_scaler.gz",
-        "target_scaler_filename": "TSLA_20260105_234302_loss-0.0014_target_scaler.gz",
+        "timestamp": "20260105_235255",
+        "model_filename": "SBUX_20260105_235255_loss-0.0015.h5",
+        "feature_scaler_filename": "SBUX_20260105_235255_loss-0.0015_feature_scaler.gz",
+        "target_scaler_filename": "SBUX_20260105_235255_loss-0.0015_target_scaler.gz",
         "metrics": {
-            "loss": 0.0014380335342139006,
+            "loss": 0.0014653963735327125,
             "epochs_trained": 10
         },
         "config": {

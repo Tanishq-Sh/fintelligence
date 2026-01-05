@@ -15,11 +15,17 @@ from src.features import add_technical_indicators
 from src.features import apply_log_transformation
 from src.config import MODELS_DIR, MODEL_CONFIG, RANDOM_SEED
 from src.utils import save_training_results
+import argparse
+
+parser = argparse.ArgumentParser(
+    description="Parse ticker provided on script call to train the specific model"
+)
+
+parser.add_argument("--ticker", required=True, type=str)
 
 # Pulling data from yfinance API
-# ticker = 'AAPL'
-# ticker = 'TSLA'
-ticker = 'NVDA'
+args = parser.parse_args()
+ticker = args.ticker
 
 config = MODEL_CONFIG.get(ticker, MODEL_CONFIG["DEFAULT"])
 

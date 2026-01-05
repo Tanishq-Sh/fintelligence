@@ -8,6 +8,8 @@ from datetime import date, timedelta
 import pandas as pd
 import pandas_market_calendars as mcal
 import os
+import subprocess
+import sys
 
 app = FastAPI()
 
@@ -50,6 +52,31 @@ def predict(ticker: str):
     model_path = os.path.join(models_path, ticker, "production", "model.h5")
     feature_scaler_path = os.path.join(models_path, ticker, "production", "feature_scaler.gz")
     target_scaler_path = os.path.join(models_path, ticker, "production", "target_scaler.gz")
+    
+    if not os.path.exists(model_path):
+        try:
+            project_root = os.path.join(os.path.dirname(__file__), "..")
+            # Use the same python interpreter that runs the API to run the script
+            python_executable = sys.executable
+            
+            # Command to execute: python train.py --ticker NVDA
+            command = [python_executable, "-m", "src.train", "--ticker", ticker]
+            
+            # Run the training script and wait for it to complete
+            # check=True will raise a CalledProcessError if the script fails
+            result = subprocess.run(
+                command,
+                check=True,
+                capture_output=True,
+                text=True,
+                cwd=project_root # Set the working directory to the project root
+                )
+        except FileNotFoundError:
+            return {"error": "train.py script not found."}
+        except subprocess.CalledProcessError as e:
+            # If training fails, return an error with the output from the script
+            return {"error": f"Failed to train model for {ticker}.", "detail": e.stderr}
+
     try:
         model = load_model(model_path)
         feature_scaler = joblib.load(feature_scaler_path)
