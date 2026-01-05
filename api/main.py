@@ -7,6 +7,7 @@ import yfinance as yf
 from datetime import date, timedelta
 import pandas as pd
 import pandas_market_calendars as mcal
+import os
 
 app = FastAPI()
 
@@ -45,10 +46,14 @@ def get_stock_data(ticker: str):
 
 @app.get("/predict/{ticker}")
 def predict(ticker: str):
+    models_path = os.path.join(os.path.dirname(__file__),'..','models')
+    model_path = os.path.join(models_path, ticker, "production", "model.h5")
+    feature_scaler_path = os.path.join(models_path, ticker, "production", "feature_scaler.gz")
+    target_scaler_path = os.path.join(models_path, ticker, "production", "target_scaler.gz")
     try:
-        model = load_model(f"{ticker}_lstm_v1.h5")
-        feature_scaler = joblib.load(f"{ticker}_feature_scaler.gz")
-        target_scaler = joblib.load(f"{ticker}_target_scaler.gz")
+        model = load_model(model_path)
+        feature_scaler = joblib.load(feature_scaler_path)
+        target_scaler = joblib.load(target_scaler_path)
     except FileNotFoundError:
         return {"error": f"Model for {ticker} not found."}
 
