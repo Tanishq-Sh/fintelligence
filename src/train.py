@@ -141,5 +141,3 @@ X_test_final = np.array(X_test_final)
 
 y_test_pred = model.predict(X_test_final)
 y_test_pred = target_scaler.inverse_transform(y_test_pred)
-
-joblib.dump(target_scaler, f'{ticker}_target_scaler.gz')
